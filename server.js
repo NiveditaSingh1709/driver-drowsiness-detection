@@ -1,46 +1,42 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const PORT = process.env.PORT || 3000;
-
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-let alerts = []; // 🧠 store alerts here
+// 🧠 In-memory alert store
+let alerts = [];
 
+/* ======================
+   ROUTES
+====================== */
+
+// Home
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // Driver sends alert
 app.post("/alert", (req, res) => {
-  console.log("🚨 Alert received:", req.body);
-
-  alerts.push({
-    ...req.body,
-    receivedAt: new Date().toISOString(),
-  });
-
-  res.json({ status: "ok" });
-});
-
-// Admin dashboard fetches alerts
-app.post("/alert", (req, res) => {
   const alert = {
     ...req.body,
     receivedAt: new Date().toISOString(),
+    escalated: false,
   };
 
   alerts.push(alert);
 
+  console.log("🚨 Alert received:", alert);
+
   // 🚨 ESCALATION RULE
   if (alert.alarmCount >= 3) {
-    console.log("📞 CALLING CUSTOMER CARE FOR DRIVER:", alert.driverId);
+    alert.escalated = true;
 
-    // Simulate call / SMS / email
     console.log(`
     ================================
     🚨 CRITICAL DRIVER SAFETY ALERT
@@ -49,9 +45,20 @@ app.post("/alert", (req, res) => {
     Action: Customer Care Notified
     ================================
     `);
-
-    alert.escalated = true;
   }
 
   res.json({ status: "ok" });
+});
+
+// Admin dashboard fetches alerts
+app.get("/alerts", (req, res) => {
+  res.json(alerts);
+});
+
+/* ======================
+   START SERVER (IMPORTANT)
+====================== */
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
