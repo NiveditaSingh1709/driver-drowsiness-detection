@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Driver Drowsiness Detection</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <h2>🚗 Driver Monitoring System</h2>
+
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="canvas"></canvas>
+
+    <p id="status">✅ Driver Awake</p>
+    <audio
+      id="alarm"
+      src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
+    ></audio>
+
+    <!-- MediaPipe AI -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+    <!-- App logic -->
+    <script src="./app.js"></script>
+  </body>
+</html>
